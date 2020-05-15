@@ -9,6 +9,7 @@
 #include <iostream>
 #include <algorithm>
 #include <getopt.h>
+#include "P2random.h"
 #include "game.h"
 #include "zombie.h"
 

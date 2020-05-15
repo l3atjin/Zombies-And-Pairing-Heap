@@ -14,6 +14,8 @@
 
 class game
 {
+private:
+	int round;
 
 };
 
