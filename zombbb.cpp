@@ -11,26 +11,19 @@
 #include <getopt.h>
 #include "P2random.h"
 #include "game.h"
-#include "zombie.h"
 
 using namespace std;
 
-struct Options
-{
-	bool isVerbose;
-	bool isStats;
-	bool isMedian;
-};
+
 
 
 Options getMode(int argc, char * argv[]) {
 	//bool modeSpecified = false;
 	Options gameOptions;
+	gameOptions.N = 0;
 	gameOptions.isVerbose = false;
 	gameOptions.isStats = false;
 	gameOptions.isMedian = false;
-	string str;
-	int count = 0;
 	// These are used with getopt_long()
 	opterr = true; // Give us help with errors
 	int choice;
@@ -65,6 +58,7 @@ Options getMode(int argc, char * argv[]) {
 		case 'm':
 		{
 			gameOptions.isMedian = true;
+			gameOptions.N = atoi(optarg);
 			break;
 		}
 		default:
@@ -84,10 +78,52 @@ int main(int argc, char * argv[])
 
 	Options mode = getMode(argc, argv);
 
-	// main game loop
-	while (true)
-	{
+	game pandemic(mode);
 
+	pandemic.read_header();
+	P2random::initialize(pandemic.randSeed, pandemic.maxRandDist, pandemic.maxRanDSpeed, pandemic.maxRandHP);
+	
+	int count = 0;
+	// main game loop
+	while (!pandemic.isDead || pandemic.isGameWon)
+	{
+		if (pandemic.isVerbose)
+		{
+			cout << "Round: " << count << endl;
+		}
+		pandemic.arrows = pandemic.quiverCap;
+
+		// Update active zombies
+		pandemic.zombies_attack();
+		if (pandemic.isDead)
+		{
+			break;
+		}
+		// Read new round and create new zombies
+		pandemic.read_round(count);
+
+		// Shoot down dem zombies
+		pandemic.human_attack();
+		if (pandemic.isMedian && pandemic.didZombieDie)
+		{
+			cout << "At the end of round " << count << ", the median zombie lifetime is " << pandemic.get_median() << endl;
+		}
+		if (!pandemic.isGameWon && !pandemic.isDead)
+		{
+			count++;
+		}
+	}
+	if (pandemic.isGameWon)
+	{
+		cout << "VICTORY IN ROUND " << count << "! " << pandemic.lastJedi << " was the last zombie." << endl;
+	}
+	else if (pandemic.isDead)
+	{
+		cout << "DEFEAT IN ROUND " << count << pandemic.chadZombie << " ate your brains!" << endl;
+	}
+	if (pandemic.isStats)
+	{
+		pandemic.print_stats();
 	}
 }
 
