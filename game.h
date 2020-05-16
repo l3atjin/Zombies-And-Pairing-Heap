@@ -74,6 +74,9 @@ public:
 class game
 {
 private:
+	
+
+public:
 	vector<zombie> activeZombies;
 	vector<zombie*> deadZombies;
 	CompareZombieETA ETAless;
@@ -81,7 +84,6 @@ private:
 	vector<int> ages;
 	priority_queue<zombie*, vector<zombie*>, CompareZombieETA> sortedZombies;
 
-public:
 	string chadZombie;
 	string lastJedi;
 	int round;
@@ -125,11 +127,18 @@ public:
 
 	void human_attack()
 	{
+		cout << "entered human attack" << endl;
+		cout << "sortedZombie size: " << sortedZombies.size() << endl;
 		while (arrows != 0 || !sortedZombies.empty())
 		{
 			while (sortedZombies.top()->health != 0 || arrows != 0)
 			{
+				cout << "Zombie name: " << sortedZombies.top()->name << endl;
+				cout << "Zombie distance: " << sortedZombies.top()->distance << endl;
+				cout << "Zombie speed: " << sortedZombies.top()->speed << endl;
+				cout << "Zombie health: " << sortedZombies.top()->health << endl;
 				sortedZombies.top()->health--;
+				cout << "Zombie hp: " << sortedZombies.top()->health << endl;
 				arrows--;
 			}
 			if (arrows != 0)
@@ -167,6 +176,7 @@ public:
 				return;
 			}
 		}
+		cout << "exited human attack" << endl;
 	}
 
 	int get_median()
@@ -193,9 +203,15 @@ public:
 
 	void read_round(int count)
 	{
+		cout << "entered read_round" << endl;
 		string indicator;
-		getline(cin, indicator);
-		assert(indicator == "---");
+		while (getline(cin, indicator))
+		{
+			if (indicator == "---")
+			{
+				break;
+			}
+		}
 		string key;
 
 		int randZombies;
@@ -223,6 +239,7 @@ public:
 				}
 				activeZombies.push_back(temp);
 				sortedZombies.push(&temp);
+				cout << activeZombies.size() << " " << sortedZombies.size() << endl;
 			}
 
 			for (int i = 0; i < namedZombies; i++)
@@ -235,8 +252,10 @@ public:
 				}
 				activeZombies.push_back(temp);
 				sortedZombies.push(&temp);
+				cout << activeZombies.size() << " " << sortedZombies.size() << endl;
 			}
 		}
+		cout << "finished read_round" << endl;
 	}
 
 	void print_stats()

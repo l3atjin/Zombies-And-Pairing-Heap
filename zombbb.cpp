@@ -83,7 +83,7 @@ int main(int argc, char * argv[])
 	pandemic.read_header();
 	P2random::initialize(pandemic.randSeed, pandemic.maxRandDist, pandemic.maxRanDSpeed, pandemic.maxRandHP);
 	
-	int count = 0;
+	int count = 1;
 	// main game loop
 	while (!pandemic.isDead || pandemic.isGameWon)
 	{
@@ -102,6 +102,7 @@ int main(int argc, char * argv[])
 		// Read new round and create new zombies
 		pandemic.read_round(count);
 
+		cout << pandemic.activeZombies.size() << " " << pandemic.sortedZombies.size() << endl;
 		// Shoot down dem zombies
 		pandemic.human_attack();
 		if (pandemic.isMedian && pandemic.didZombieDie)
@@ -112,6 +113,8 @@ int main(int argc, char * argv[])
 		{
 			count++;
 		}
+
+		cout << "finished loop" << endl;
 	}
 	if (pandemic.isGameWon)
 	{
