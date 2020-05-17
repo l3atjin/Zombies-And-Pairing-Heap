@@ -10,6 +10,7 @@
 #include <iostream>
 #include <algorithm>
 #include <getopt.h>
+#include "P2random.h"
 
 using namespace std;
 
@@ -28,9 +29,14 @@ public:
 	int age = 0;
 	int ETA;
 	bool isActive = true;
+	bool moved = false;
+
 
 	zombie(string name_in, int dist_in, int speed_in, int hp_in, int round_in)
-		: name(name_in), distance(dist_in), speed(speed_in), health(hp_in), roundBorn(round_in) {}
+		: name(name_in), distance(dist_in), speed(speed_in), health(hp_in), roundBorn(round_in) 
+	{
+		ETA = distance / speed;
+	}
 	
 	void move(bool &isDead, bool isVerbose, string &chadZombie)
 	{
@@ -38,11 +44,11 @@ public:
 		{
 			distance = max(0, distance - speed);
 			ETA = distance / speed;
-			age++;
+			moved = true;
 
 			if (isVerbose)
 			{
-				cout << "Moved: " << name << " (distance: " << distance << ", speed: " << speed << ", health: " << health << ")" << endl;
+				cout << "Moved: " << name << " (distance: " << distance << ", speed: " << speed << ", health: " << health << ")" << "\n";
 			}
 			if (!isDead)
 			{

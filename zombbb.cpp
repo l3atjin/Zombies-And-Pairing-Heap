@@ -53,16 +53,16 @@ Options getMode(int argc, char * argv[]) {
 		case 's':
 		{
 			gameOptions.isStats = true;
+			gameOptions.N = atoi(optarg);
 			break;
 		}
 		case 'm':
 		{
 			gameOptions.isMedian = true;
-			gameOptions.N = atoi(optarg);
 			break;
 		}
 		default:
-			cerr << "Error: invalid option" << endl;
+			cerr << "Error: invalid option" << "\n";
 			exit(1);
 			// switch
 		} // switch
@@ -89,40 +89,45 @@ int main(int argc, char * argv[])
 	{
 		if (pandemic.isVerbose)
 		{
-			cout << "Round: " << count << endl;
+			cout << "Round: " << count << "\n";
 		}
 		pandemic.arrows = pandemic.quiverCap;
 
 		// Update active zombies
 		pandemic.zombies_attack();
-		if (pandemic.isDead)
+		if (!pandemic.isDead)
 		{
-			break;
-		}
-		// Read new round and create new zombies
-		pandemic.read_round(count);
+			// Read new round and create new zombies
+			pandemic.read_round(count);
 
-		cout << pandemic.activeZombies.size() << " " << pandemic.sortedZombies.size() << endl;
-		// Shoot down dem zombies
-		pandemic.human_attack();
-		if (pandemic.isMedian && pandemic.didZombieDie)
-		{
-			cout << "At the end of round " << count << ", the median zombie lifetime is " << pandemic.get_median() << endl;
+			//cout << pandemic.activeZombies.size() << " " << pandemic.sortedZombies.size() << "\n";
+
+			//pandemic.print_test();
+
+			// Shoot down dem zombies
+			pandemic.human_attack();
+			if (pandemic.isMedian && pandemic.didZombieDie)
+			{
+				cout << "At the end of round " << count << ", the median zombie lifetime is " << pandemic.get_median() << "\n";
+			}
 		}
+		
 		if (!pandemic.isGameWon && !pandemic.isDead)
 		{
 			count++;
 		}
+		//cout << "updated age" << endl;
+		pandemic.update_age();
 
-		cout << "finished loop" << endl;
+		//cout << "finished loop" << "\n";
 	}
 	if (pandemic.isGameWon)
 	{
-		cout << "VICTORY IN ROUND " << count << "! " << pandemic.lastJedi << " was the last zombie." << endl;
+		cout << "VICTORY IN ROUND " << count << "! " << pandemic.lastJedi << " was the last zombie." << "\n";
 	}
 	else if (pandemic.isDead)
 	{
-		cout << "DEFEAT IN ROUND " << count << pandemic.chadZombie << " ate your brains!" << endl;
+		cout << "DEFEAT IN ROUND " << count << "! " << pandemic.chadZombie << " ate your brains!" << "\n";
 	}
 	if (pandemic.isStats)
 	{
