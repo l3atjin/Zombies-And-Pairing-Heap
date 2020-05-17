@@ -118,16 +118,18 @@ public:
 	int maxRandDist;
 	int maxRanDSpeed;
 	int maxRandHP;
+	int roundNum;
 
 	unsigned int N;
 
 	// round variables
 	bool isDead = false;
-	bool isGameWon;
+	bool isGameWon = false;
 	bool isVerbose;
 	bool isStats;
 	bool isMedian;
 	bool didZombieDie = false;
+	bool skipped = false;
 
 	game (Options mode_in)
 		: N(mode_in.N), isVerbose(mode_in.isVerbose), isStats(mode_in.isStats), isMedian(mode_in.isMedian)
@@ -152,23 +154,40 @@ public:
 	{
 		//cout << "entered human attack" << "\n";
 		//cout << "sortedZombie size: " << sortedZombies.size() << "\n";
-		while (arrows != 0 || !sortedZombies.empty())
+		if (!isDead)
 		{
-			while (sortedZombies.top()->health != 0 || arrows != 0)
+			while (arrows != 0 || !sortedZombies.empty())
 			{
-				sortedZombies.top()->health--;
-				arrows--;
-				if (sortedZombies.top()->health == 0)
+				while (sortedZombies.top()->health != 0 || arrows != 0)
 				{
-					break;
+					sortedZombies.top()->health--;
+					arrows--;
+					if (sortedZombies.top()->health == 0)
+					{
+						break;
+					}
+					if (arrows == 0)
+					{
+						break;
+					}
 				}
 				if (arrows == 0)
 				{
-					break;
+					if (sortedZombies.top()->health == 0)
+					{
+						if (isVerbose)
+						{
+							cout << "Destroyed: " << sortedZombies.top()->name << " (distance: " << sortedZombies.top()->distance << ", speed: " << sortedZombies.top()->speed << ", health: " << sortedZombies.top()->health << ")" << "\n";
+						}
+						didZombieDie = true;
+						sortedZombies.top()->isActive = false;
+						sortedZombies.top()->age++;
+						ages.push_back(sortedZombies.top()->age);
+						deadZombies.push_back(sortedZombies.top());
+						sortedZombies.pop();
+					}
+					return;
 				}
-			}
-			if (arrows == 0)
-			{
 				if (sortedZombies.top()->health == 0)
 				{
 					if (isVerbose)
@@ -182,28 +201,15 @@ public:
 					deadZombies.push_back(sortedZombies.top());
 					sortedZombies.pop();
 				}
-				return;
-			}
-			if (sortedZombies.top()->health == 0)
-			{
-				if (isVerbose)
+				if (sortedZombies.empty())
 				{
-					cout << "Destroyed: " << sortedZombies.top()->name << " (distance: " << sortedZombies.top()->distance << ", speed: " << sortedZombies.top()->speed << ", health: " << sortedZombies.top()->health << ")" << "\n";
+					isGameWon = true;
+					lastJedi = sortedZombies.top()->name;
+					return;
 				}
-				didZombieDie = true;
-				sortedZombies.top()->isActive = false;
-				sortedZombies.top()->age++;
-				ages.push_back(sortedZombies.top()->age);
-				deadZombies.push_back(sortedZombies.top());
-				sortedZombies.pop();
-			}
-			if (sortedZombies.empty())
-			{
-				isGameWon = true;
-				lastJedi = sortedZombies.top()->name;
-				return;
 			}
 		}
+		
 		//cout << "exited human attack" << "\n";
 	}
 
@@ -238,27 +244,33 @@ public:
 	void read_round(int count)
 	{
 		//cout << "entered read_round" << "\n";
-		string indicator;
-		while (cin >> indicator)
-		{
-			//cout << indicator << "\n";
-			if (indicator == "---")
-			{
-				break;
-			}
-		}
 		string key;
 
 		int randZombies;
 		int namedZombies;
-		int roundNum;
+		if (!skipped)
+		{
+			string indicator;
+			while (cin >> indicator)
+			{
+				//cout << indicator << "\n";
+				if (indicator == "---")
+				{
+					break;
+				}
+			}
+			
 
-		cin >> key >> roundNum;
-		cin >> key >> randZombies;
-		cin >> key >> namedZombies;
-		//cout << "round information: " << roundNum << randZombies << namedZombies << "\n";
+			cin >> key >> roundNum;
+		}
+		
 		if (count == roundNum)
 		{
+			skipped = false;
+			cin >> key >> randZombies;
+			cin >> key >> namedZombies;
+			//cout << "round information: " << roundNum << randZombies << namedZombies << "\n";
+		
 			//cout << "passed if statement " << "\n";
 			string name, key1, key2;
 			unsigned int dist, speed, hp;
@@ -294,6 +306,10 @@ public:
 				//cout << activeZombies.size() << " " << sortedZombies.size() << "\n";
 			}
 		}
+		else
+		{
+			skipped = true;
+		}
 		//cout << "finished read_round" << "\n";
 	}
 
@@ -301,7 +317,7 @@ public:
 	{
 		for (size_t i = 0; i < activeZombies.size(); i++)
 		{
-			if (activeZombies[i].isActive || activeZombies[i].moved)
+			if (activeZombies[i].isActive)
 			{
 				activeZombies[i].age++;
 			}
@@ -334,23 +350,27 @@ public:
 			cout << deadZombies[i]->name << " " << i + 1 << "\n";
 		}
 
-		if (min == deadZombies.size())
-		{
-			min--;
-		}
+		size_t count1 = 1;
 
 		cout << "Last zombies killed:" << "\n";
-		for (size_t i = min; i > 0; i--)
+		for (size_t i = deadZombies.size() - 1; i > 0 && N != count1 - 1; i--)
 		{
-			cout << deadZombies[i]->name << " " << i + 1 << "\n";
+			cout << deadZombies[i]->name << " " << N - count1 + 1 << "\n";
+			count1++;
 		}
-		cout << deadZombies[0]->name << " " << 1 << "\n";
+		if (count1 < N + 1)
+		{
+			cout << deadZombies[0]->name << " " << 1 << "\n";
+		}
+		
+
+
 
 		cout << "Most active zombies:" << "\n";
 
 		sort(activeZombies.begin(), activeZombies.end(), ageMore);
 
-		size_t count1 = 1;
+		count1 = 1;
 
 		for (size_t i = 0; i < activeZombies.size() && N != count1 - 1; i++)
 		{

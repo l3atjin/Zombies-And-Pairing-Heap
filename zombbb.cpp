@@ -95,7 +95,7 @@ int main(int argc, char * argv[])
 
 		// Update active zombies
 		pandemic.zombies_attack();
-		if (!pandemic.isDead)
+		if (!pandemic.isDead && !pandemic.isGameWon)
 		{
 			// Read new round and create new zombies
 			pandemic.read_round(count);
@@ -111,15 +111,20 @@ int main(int argc, char * argv[])
 				cout << "At the end of round " << count << ", the median zombie lifetime is " << pandemic.get_median() << "\n";
 			}
 		}
-		
+		pandemic.update_age();
 		if (!pandemic.isGameWon && !pandemic.isDead)
 		{
 			count++;
 		}
+		if (pandemic.isGameWon || pandemic.isDead)
+		{
+			break;
+		}
 		//cout << "updated age" << endl;
-		pandemic.update_age();
+		
 
 		//cout << "finished loop" << "\n";
+		
 	}
 	if (pandemic.isGameWon)
 	{
