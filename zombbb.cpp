@@ -31,7 +31,7 @@ Options getMode(int argc, char * argv[]) {
 	option long_options[] = {
 		{ "help", no_argument, nullptr, 'h' },
 		{ "verbose", no_argument, nullptr, 'v' },
-		{ "stats", required_argument, nullptr, 's' },
+		{ "statistics", required_argument, nullptr, 's' },
 		{ "median", no_argument, nullptr, 'm' },
 		{ nullptr, 0,                 nullptr, '\0' }
 	};
@@ -62,7 +62,7 @@ Options getMode(int argc, char * argv[]) {
 			break;
 		}
 		default:
-			cerr << "Error: invalid option" << "\n";
+			cout << "Error: invalid option" << "\n";
 			exit(1);
 			// switch
 		} // switch
@@ -74,7 +74,7 @@ Options getMode(int argc, char * argv[]) {
 
 int main(int argc, char * argv[])
 {
-	//std::ios_base::sync_with_stdio(false);
+	std::ios_base::sync_with_stdio(false);
 
 	Options mode = getMode(argc, argv);
 
@@ -94,7 +94,7 @@ int main(int argc, char * argv[])
 		pandemic.arrows = pandemic.quiverCap;
 
 		// Update active zombies
-		pandemic.zombies_attack();
+		pandemic.zombies_attack(count);
 		if (!pandemic.isDead && !pandemic.isGameWon)
 		{
 			// Read new round and create new zombies
@@ -105,13 +105,12 @@ int main(int argc, char * argv[])
 			//pandemic.print_test();
 
 			// Shoot down dem zombies
-			pandemic.human_attack();
+			pandemic.human_attack(count);
 			if (pandemic.isMedian && pandemic.didZombieDie)
 			{
 				cout << "At the end of round " << count << ", the median zombie lifetime is " << pandemic.get_median() << "\n";
 			}
 		}
-		pandemic.update_age();
 		if (!pandemic.isGameWon && !pandemic.isDead)
 		{
 			count++;
@@ -120,12 +119,13 @@ int main(int argc, char * argv[])
 		{
 			break;
 		}
-		//cout << "updated age" << endl;
+		//cout << "updated age" << "\n"
 		
 
 		//cout << "finished loop" << "\n";
 		
 	}
+	pandemic.update_age();
 	if (pandemic.isGameWon)
 	{
 		cout << "VICTORY IN ROUND " << count << "! " << pandemic.lastJedi << " was the last zombie." << "\n";

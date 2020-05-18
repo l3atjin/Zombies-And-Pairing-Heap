@@ -1,0 +1,18 @@
+# sample.txt
+quiver-capacity: 10
+random-seed: 2049231
+max-rand-distance: 50
+max-rand-speed: 60
+max-rand-health: 1
+---
+round: 1
+random-zombies: 0
+named-zombies: 1
+MarkSchlissel distance: 0 speed: 300 health: 10
+---
+round: 2
+random-zombies: 0
+named-zombies: 1
+Batman distance: 0 speed: 300 health: 11
+
+

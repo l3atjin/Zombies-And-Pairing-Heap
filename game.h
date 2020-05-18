@@ -108,7 +108,7 @@ public:
 
 	string chadZombie;
 	string lastJedi;
-	int round;
+	int lastRound;
 	int arrows;
 	int totalZombies = 0;
 
@@ -135,7 +135,7 @@ public:
 		: N(mode_in.N), isVerbose(mode_in.isVerbose), isStats(mode_in.isStats), isMedian(mode_in.isMedian)
 	{}
 
-	void zombies_attack()
+	void zombies_attack(int count_in)
 	{
 		if (!activeZombies.empty())
 		{
@@ -145,20 +145,31 @@ public:
 			}
 			if (isDead)
 			{
+				lastRound = count_in;
 				return;
 			}
 		}
 	}
 
-	void human_attack()
+	void human_attack(int count_in)
 	{
 		//cout << "entered human attack" << "\n";
 		//cout << "sortedZombie size: " << sortedZombies.size() << "\n";
-		if (!isDead)
+		if (!isDead && !activeZombies.empty())
 		{
 			while (arrows != 0 || !sortedZombies.empty())
 			{
-				while (sortedZombies.top()->health != 0 || arrows != 0)
+				if (arrows >= sortedZombies.top()->health)
+				{
+					arrows = arrows - sortedZombies.top()->health;
+					sortedZombies.top()->health = 0;
+				}
+				else if (arrows < sortedZombies.top()->health)
+				{
+					sortedZombies.top()->health = sortedZombies.top()->health - arrows;
+					arrows = 0;
+				}
+				/*while (sortedZombies.top()->health != 0 || arrows != 0)
 				{
 					sortedZombies.top()->health--;
 					arrows--;
@@ -170,7 +181,7 @@ public:
 					{
 						break;
 					}
-				}
+				}*/
 				if (arrows == 0)
 				{
 					if (sortedZombies.top()->health == 0)
@@ -181,10 +192,18 @@ public:
 						}
 						didZombieDie = true;
 						sortedZombies.top()->isActive = false;
-						sortedZombies.top()->age++;
+						sortedZombies.top()->roundDied = count_in;
+						sortedZombies.top()->age = count_in - sortedZombies.top()->roundBorn + 1;
 						ages.push_back(sortedZombies.top()->age);
 						deadZombies.push_back(sortedZombies.top());
 						sortedZombies.pop();
+					}
+					if (sortedZombies.empty())
+					{
+						isGameWon = true;
+						lastRound = count_in;
+						lastJedi = sortedZombies.top()->name;
+						return;
 					}
 					return;
 				}
@@ -196,7 +215,8 @@ public:
 					}
 					didZombieDie = true;
 					sortedZombies.top()->isActive = false;
-					sortedZombies.top()->age++;
+					sortedZombies.top()->roundDied = count_in;
+					sortedZombies.top()->age = count_in - sortedZombies.top()->roundBorn + 1;
 					ages.push_back(sortedZombies.top()->age);
 					deadZombies.push_back(sortedZombies.top());
 					sortedZombies.pop();
@@ -204,6 +224,7 @@ public:
 				if (sortedZombies.empty())
 				{
 					isGameWon = true;
+					lastRound = count_in;
 					lastJedi = sortedZombies.top()->name;
 					return;
 				}
@@ -319,7 +340,7 @@ public:
 		{
 			if (activeZombies[i].isActive)
 			{
-				activeZombies[i].age++;
+				activeZombies[i].age = lastRound - activeZombies[i].roundBorn + 1;
 			}
 		}
 	}

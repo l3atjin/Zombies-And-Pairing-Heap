@@ -1,0 +1,18 @@
+# sample.txt
+random: 10
+asfda: 2049231
+gagfa: 50
+max-rand-speed: 60
+qtiepie: 1
+---
+asfads: 1
+gafsfasdf: 25
+gafsvav: 3
+MarkSchlissel distance: 150 dfasf: 300 health: 15
+MarySueColeman distance: 2 speed: 3 health: 6
+LeeBollinger distance: 100 speed: 1 health: 100
+---
+round: 3
+random-zombies: 50
+named-zombies: 1
+JamesDuderstadt distance: 20 speed: 10 health: 20
