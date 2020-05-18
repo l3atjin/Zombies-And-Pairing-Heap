@@ -104,6 +104,8 @@ CompareZombieETA ETAless;
 CompareZombieAgeLess ageLess;
 CompareZombieAgeMore ageMore;
 priority_queue<zombie*, deque<zombie*>, CompareZombieETA> sortedZombies;
+priority_queue<zombie*, deque<zombie*>, CompareZombieETA> mostActiveZombies;
+priority_queue<zombie*, deque<zombie*>, CompareZombieETA> leastActiveZombies;
 priority_queue<int, deque<int>, greater<int>> upper;
 priority_queue<int, deque<int>, less<int>> lower;
 
@@ -345,6 +347,8 @@ void read_round(int count)
 			}
 			activeZombies.push_back(temp);
 			sortedZombies.push(&activeZombies[totalZombies]);
+			mostActiveZombies.push(&activeZombies[totalZombies]);
+			leastActiveZombies.push(&activeZombies[totalZombies]);
 			totalZombies++;
 			//cout << "container sizes: " << activeZombies.size() << " " << sortedZombies.size() << "\n";
 		}
@@ -359,6 +363,8 @@ void read_round(int count)
 			}
 			activeZombies.push_back(temp);
 			sortedZombies.push(&activeZombies[totalZombies]);
+			mostActiveZombies.push(&activeZombies[totalZombies]);
+			leastActiveZombies.push(&activeZombies[totalZombies]);
 			totalZombies++;
 			//cout << activeZombies.size() << " " << sortedZombies.size() << "\n";
 		}
@@ -410,29 +416,33 @@ void print_stats()
 	cout << "Zombies still active: " << activeZombies.size() - deadZombies.size() << "\n";
 		
 	cout << "First zombies killed:" << "\n";
-
 	size_t min = deadZombies.size();
-	if (N < deadZombies.size())
+	if (!deadZombies.empty())
 	{
-		min = N;
-	}
-
-	for (size_t i = 0; i < min; i++)
-	{
-		cout << deadZombies[i]->name << " " << i + 1 << "\n";
+		if (N < deadZombies.size())
+		{
+			min = N;
+		}
+		for (size_t i = 0; i < min; i++)
+		{
+			cout << deadZombies[i]->name << " " << i + 1 << "\n";
+		}
 	}
 
 	size_t count1 = 1;
 
 	cout << "Last zombies killed:" << "\n";
-	for (size_t i = deadZombies.size() - 1; i > 0 && N != count1 - 1; i--)
+	if (!deadZombies.empty())
 	{
-		cout << deadZombies[i]->name << " " << N - count1 + 1 << "\n";
-		count1++;
-	}
-	if (count1 < N + 1)
-	{
-		cout << deadZombies[0]->name << " " << 1 << "\n";
+		for (size_t i = deadZombies.size() - 1; i > 0 && N != count1 - 1; i--)
+		{
+			cout << deadZombies[i]->name << " " << N - count1 + 1 << "\n";
+			count1++;
+		}
+		if (count1 < N + 1)
+		{
+			cout << deadZombies[0]->name << " " << 1 << "\n";
+		}
 	}
 
 	cout << "Most active zombies:" << "\n";

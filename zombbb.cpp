@@ -74,7 +74,7 @@ Options getMode(int argc, char * argv[]) {
 
 int main(int argc, char * argv[])
 {
-	//std::ios_base::sync_with_stdio(false);
+	std::ios_base::sync_with_stdio(false);
 
 	Options mode = getMode(argc, argv);
 
@@ -142,6 +142,10 @@ int main(int argc, char * argv[])
 	{
 		pandemic.print_stats();
 	}
+	cout << "Active zombies size: " << pandemic.activeZombies.size() << endl;
+	cout << "Sorted zombies size: " << pandemic.sortedZombies.size() << endl;
+	cout << "Most active zombies size: " << pandemic.mostActiveZombies.size() << endl;
+	cout << "Least active zombies size: " << pandemic.leastActiveZombies.size() << endl;
 }
 
 
