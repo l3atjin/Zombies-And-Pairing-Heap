@@ -1,0 +1,75 @@
+Round: 1
+Created: paoletti0 (distance: 25, speed: 20, health: 1)
+Created: darden1 (distance: 17, speed: 48, health: 1)
+Created: garcia2 (distance: 15, speed: 57, health: 1)
+Created: cris3 (distance: 8, speed: 9, health: 1)
+Created: bing4 (distance: 11, speed: 45, health: 1)
+Created: will5 (distance: 17, speed: 6, health: 1)
+Created: fee6 (distance: 23, speed: 10, health: 1)
+Created: noah7 (distance: 17, speed: 9, health: 1)
+Created: potatobot8 (distance: 22, speed: 32, health: 1)
+Created: paoletti9 (distance: 17, speed: 60, health: 1)
+Created: MarkSchlissel (distance: 150, speed: 300, health: 15)
+Created: MarySueColeman (distance: 2, speed: 3, health: 6)
+Created: LeeBollinger (distance: 100, speed: 100, health: 100)
+Destroyed: bing4 (distance: 11, speed: 45, health: 0)
+Destroyed: cris3 (distance: 8, speed: 9, health: 0)
+Destroyed: darden1 (distance: 17, speed: 48, health: 0)
+Destroyed: garcia2 (distance: 15, speed: 57, health: 0)
+Destroyed: paoletti9 (distance: 17, speed: 60, health: 0)
+Destroyed: potatobot8 (distance: 22, speed: 32, health: 0)
+Destroyed: MarySueColeman (distance: 2, speed: 3, health: 0)
+Destroyed: MarkSchlissel (distance: 150, speed: 300, health: 0)
+Destroyed: noah7 (distance: 17, speed: 9, health: 0)
+Destroyed: paoletti0 (distance: 25, speed: 20, health: 0)
+At the end of round 1, the median zombie lifetime is 1
+Round: 2
+Moved: will5 (distance: 11, speed: 6, health: 1)
+Moved: fee6 (distance: 13, speed: 10, health: 1)
+Moved: LeeBollinger (distance: 0, speed: 100, health: 29)
+DEFEAT IN ROUND 2! LeeBollinger ate your brains!
+Zombies still active: 3
+First zombies killed:
+bing4 1
+cris3 2
+darden1 3
+garcia2 4
+paoletti9 5
+potatobot8 6
+MarySueColeman 7
+MarkSchlissel 8
+noah7 9
+paoletti0 10
+Last zombies killed:
+paoletti0 10
+noah7 9
+MarkSchlissel 8
+MarySueColeman 7
+potatobot8 6
+paoletti9 5
+garcia2 4
+darden1 3
+cris3 2
+bing4 1
+Most active zombies:
+LeeBollinger 2
+fee6 2
+will5 2
+MarkSchlissel 1
+MarySueColeman 1
+bing4 1
+cris3 1
+darden1 1
+garcia2 1
+noah7 1
+Least active zombies:
+MarkSchlissel 1
+MarySueColeman 1
+bing4 1
+cris3 1
+darden1 1
+garcia2 1
+noah7 1
+paoletti0 1
+paoletti9 1
+potatobot8 1

@@ -108,6 +108,7 @@ priority_queue<zombie*, deque<zombie*>, CompareZombieETA> sortedZombies;
 
 string chadZombie;
 string lastJedi;
+string indicator;
 int lastRound;
 int arrows;
 int totalZombies = 0;
@@ -156,35 +157,34 @@ void human_attack(int count_in)
 {
 	//cout << "entered human attack" << "\n";
 	//cout << "sortedZombie size: " << sortedZombies.size() << "\n";
-	if (!isDead && !activeZombies.empty() && !isGameWon)
+	if (!isDead && !sortedZombies.empty() && !isGameWon)
 	{
-		while (arrows != 0 || !sortedZombies.empty())
+		while (arrows != 0 && !sortedZombies.empty())
 		{
 			if (arrows >= sortedZombies.top()->health)
 			{
 				arrows = arrows - sortedZombies.top()->health;
 				sortedZombies.top()->health = 0;
+				if (isVerbose)
+				{
+					cout << "Destroyed: " << sortedZombies.top()->name << " (distance: " << sortedZombies.top()->distance << ", speed: " << sortedZombies.top()->speed << ", health: " << sortedZombies.top()->health << ")" << "\n";
+				}
+				didZombieDie = true;
+				sortedZombies.top()->isActive = false;
+				sortedZombies.top()->roundDied = count_in;
+				sortedZombies.top()->age = count_in - sortedZombies.top()->roundBorn + 1;
+				ages.push_back(sortedZombies.top()->age);
+				deadZombies.push_back(sortedZombies.top());
+				if (sortedZombies.size() == 1)
+				{
+					lastJedi = sortedZombies.top()->name;
+				}
+				sortedZombies.pop();
 			}
 			else if (arrows < sortedZombies.top()->health)
 			{
 				sortedZombies.top()->health = sortedZombies.top()->health - arrows;
 				arrows = 0;
-			}
-			/*while (sortedZombies.top()->health != 0 || arrows != 0)
-			{
-				sortedZombies.top()->health--;
-				arrows--;
-				if (sortedZombies.top()->health == 0)
-				{
-					break;
-				}
-				if (arrows == 0)
-				{
-					break;
-				}
-			}*/
-			if (arrows == 0)
-			{
 				if (sortedZombies.top()->health == 0)
 				{
 					if (isVerbose)
@@ -203,35 +203,7 @@ void human_attack(int count_in)
 					}
 					sortedZombies.pop();
 				}
-				if (sortedZombies.empty())
-				{
-					if (!nextRound)
-					{
-						isGameWon = true;
-						lastRound = count_in;
-						return;
-					}
-					return;
-				}
 				return;
-			}
-			if (sortedZombies.top()->health == 0)
-			{
-				if (isVerbose)
-				{
-					cout << "Destroyed: " << sortedZombies.top()->name << " (distance: " << sortedZombies.top()->distance << ", speed: " << sortedZombies.top()->speed << ", health: " << sortedZombies.top()->health << ")" << "\n";
-				}
-				didZombieDie = true;
-				sortedZombies.top()->isActive = false;
-				sortedZombies.top()->roundDied = count_in;
-				sortedZombies.top()->age = count_in - sortedZombies.top()->roundBorn + 1;
-				ages.push_back(sortedZombies.top()->age);
-				deadZombies.push_back(sortedZombies.top());
-				if (sortedZombies.size() == 1)
-				{
-					lastJedi = sortedZombies.top()->name;
-				}
-				sortedZombies.pop();
 			}
 			if (sortedZombies.empty())
 			{
@@ -244,6 +216,26 @@ void human_attack(int count_in)
 				return;
 			}
 		}
+		if (sortedZombies.empty())
+		{
+			if (!nextRound)
+			{
+				isGameWon = true;
+				lastRound = count_in;
+				return;
+			}
+			return;
+		}
+	}
+	if (sortedZombies.empty())
+	{
+		if (!nextRound)
+		{
+			isGameWon = true;
+			lastRound = count_in;
+			return;
+		}
+		return;
 	}
 		
 	//cout << "exited human attack" << "\n";
@@ -283,31 +275,22 @@ void read_round(int count)
 	string key;
 	int randZombies;
 	int namedZombies;
-	string indicator;
-	bool pleaseLetMeSleep = false;
-	if (!skipped)
+
+	if (indicator != "---")
 	{
 		while (cin >> indicator)
 		{
 			//cout << indicator << "\n";
 			if (indicator == "---")
 			{
-				pleaseLetMeSleep = true;
+				cin >> key >> roundNum;
 				break;
 			}
 		}
-		if (!pleaseLetMeSleep)
-		{
-			nextRound = false;
-			return;
-		}
-
-		cin >> key >> roundNum;
 	}
 		
-	if (count == roundNum)
+	if (count == roundNum && indicator == "---")
 	{
-		skipped = false;
 		cin >> key >> randZombies;
 		cin >> key >> namedZombies;
 		//cout << "round information: " << roundNum << randZombies << namedZombies << "\n";
@@ -347,15 +330,25 @@ void read_round(int count)
 			//cout << activeZombies.size() << " " << sortedZombies.size() << "\n";
 		}
 		// THIS IF STATEMENT MIGHT BE THE CAUSE OF YOUR DOOM
-		if (!sortedZombies.empty())
+	}
+	// if a round is skipped
+	else if (indicator == "---" && roundNum != count)
+	{
+		return;
+	}
+	if (cin >> indicator)
+	{
+		if (indicator == "---")
 		{
-			return;
+			nextRound = true;
+			cin >> key >> roundNum;
 		}
 	}
 	else
 	{
-		skipped = true;
+		nextRound = false;
 	}
+
 	//cout << "finished read_round" << "\n";
 }
 
@@ -408,9 +401,6 @@ void print_stats()
 	{
 		cout << deadZombies[0]->name << " " << 1 << "\n";
 	}
-		
-
-
 
 	cout << "Most active zombies:" << "\n";
 
