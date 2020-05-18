@@ -98,7 +98,10 @@ int main(int argc, char * argv[])
 		if (!pandemic.isDead && !pandemic.isGameWon)
 		{
 			// Read new round and create new zombies
-			pandemic.read_round(count);
+			if (pandemic.nextRound)
+			{
+				pandemic.read_round(count);
+			}
 
 			//cout << pandemic.activeZombies.size() << " " << pandemic.sortedZombies.size() << "\n";
 
@@ -106,10 +109,11 @@ int main(int argc, char * argv[])
 
 			// Shoot down dem zombies
 			pandemic.human_attack(count);
-			if (pandemic.isMedian && pandemic.didZombieDie)
-			{
-				cout << "At the end of round " << count << ", the median zombie lifetime is " << pandemic.get_median() << "\n";
-			}
+			
+		}
+		if (pandemic.isMedian && pandemic.didZombieDie && !pandemic.isDead)
+		{
+			cout << "At the end of round " << count << ", the median zombie lifetime is " << pandemic.get_median() << "\n";
 		}
 		if (!pandemic.isGameWon && !pandemic.isDead)
 		{
