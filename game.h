@@ -103,8 +103,9 @@ deque<zombie*> deadZombies;
 CompareZombieETA ETAless;
 CompareZombieAgeLess ageLess;
 CompareZombieAgeMore ageMore;
-vector<int> ages;
 priority_queue<zombie*, deque<zombie*>, CompareZombieETA> sortedZombies;
+priority_queue<int, deque<int>, greater<int>> upper;
+priority_queue<int, deque<int>, less<int>> lower;
 
 string chadZombie;
 string lastJedi;
@@ -153,6 +154,33 @@ void zombies_attack(int count_in)
 	}
 }
 
+void median_helper(int in)
+{
+	if (!didZombieDie)
+	{
+		upper.push(in);
+	}
+	else if (in >= upper.top())
+	{
+		upper.push(in);
+	}
+	else
+	{
+		lower.push(in);
+	}
+	// balance
+	if (upper.size() - lower.size() == 2) 
+	{ 
+		lower.push(upper.top());
+		upper.pop();
+	}
+	else if (lower.size() - upper.size() == 2) 
+	{
+		upper.push(lower.top());
+		lower.pop();
+	}
+}
+
 void human_attack(int count_in)
 {
 	//cout << "entered human attack" << "\n";
@@ -169,12 +197,13 @@ void human_attack(int count_in)
 				{
 					cout << "Destroyed: " << sortedZombies.top()->name << " (distance: " << sortedZombies.top()->distance << ", speed: " << sortedZombies.top()->speed << ", health: " << sortedZombies.top()->health << ")" << "\n";
 				}
-				didZombieDie = true;
 				sortedZombies.top()->isActive = false;
 				sortedZombies.top()->roundDied = count_in;
 				sortedZombies.top()->age = count_in - sortedZombies.top()->roundBorn + 1;
-				ages.push_back(sortedZombies.top()->age);
+				//ages.push_back(sortedZombies.top()->age);
+				median_helper(sortedZombies.top()->age);
 				deadZombies.push_back(sortedZombies.top());
+				didZombieDie = true;
 				if (sortedZombies.size() == 1)
 				{
 					lastJedi = sortedZombies.top()->name;
@@ -191,12 +220,13 @@ void human_attack(int count_in)
 					{
 						cout << "Destroyed: " << sortedZombies.top()->name << " (distance: " << sortedZombies.top()->distance << ", speed: " << sortedZombies.top()->speed << ", health: " << sortedZombies.top()->health << ")" << "\n";
 					}
-					didZombieDie = true;
 					sortedZombies.top()->isActive = false;
 					sortedZombies.top()->roundDied = count_in;
 					sortedZombies.top()->age = count_in - sortedZombies.top()->roundBorn + 1;
-					ages.push_back(sortedZombies.top()->age);
+					median_helper(sortedZombies.top()->age);
+					//ages.push_back(sortedZombies.top()->age);
 					deadZombies.push_back(sortedZombies.top());
+					didZombieDie = true;
 					if (sortedZombies.size() == 1)
 					{
 						lastJedi = sortedZombies.top()->name;
@@ -243,12 +273,15 @@ void human_attack(int count_in)
 
 int get_median()
 {
-	sort(ages.begin(), ages.end());
-	if (ages.size() % 2 != 0)
+	if ((upper.size() + lower.size()) % 2 == 0)
 	{
-		return ages[ages.size() / 2];
+		return (upper.top() + lower.top()) / 2;
 	}
-	return (ages[(ages.size() - 1) / 2] + ages[ages.size() / 2]) / 2;
+	else if (upper.size() > lower.size())
+	{
+		return upper.top();
+	}
+	return lower.top();
 }
 
 void read_header()
