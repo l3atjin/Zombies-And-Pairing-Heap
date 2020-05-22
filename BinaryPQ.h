@@ -17,8 +17,9 @@ public:
     // Description: Construct an empty heap with an optional comparison functor.
     // Runtime: O(1)
     explicit BinaryPQ(COMP_FUNCTOR comp = COMP_FUNCTOR()) :
-        BaseClass{ comp } {
-        // TODO: Implement this function.
+		BaseClass{ comp }, data{} {
+		TYPE junk;
+		data[0] = junk;
     } // BinaryPQ
 
 
@@ -27,9 +28,12 @@ public:
     // Runtime: O(n) where n is number of elements in range.
     // TODO: when you implement this function, uncomment the parameter names.
     template<typename InputIterator>
-    BinaryPQ(InputIterator /*start*/, InputIterator /*end*/, COMP_FUNCTOR comp = COMP_FUNCTOR()) :
-        BaseClass{ comp } {
-        // TODO: Implement this function.
+    BinaryPQ(InputIterator start, InputIterator end, COMP_FUNCTOR comp = COMP_FUNCTOR()) :
+		BaseClass{ comp }, data{start, end + 1} {
+		for (size_t i = this.size() / 2; i > 0; i--)
+		{
+			fixDown(i);
+		}
     } // BinaryPQ
 
 
@@ -38,20 +42,50 @@ public:
     virtual ~BinaryPQ() {
     } // ~BinaryPQ()
 
+	void fixUp(int k)
+	{
+		while (k > 1 && this->compare(data[k/2], data[k]))
+		{
+			swap(data[k], data[k/2]);
+			k = / 2;
+		}
+	}
+
+	void fixDown(int k)
+	{
+		while (k > 1 && this->compare(data[k / 2], data[k]))
+		{
+			int j = 2 * k;
+			if (j < this.size() && this->compare(data[j], data[j+1]))
+			{
+				++j;
+			}
+			if (!this->compare(data[k], data[j]))
+			{
+				return;
+			}
+			swap(data[k], data[j]);
+			k = j;
+		}
+	}
 
     // Description: Assumes that all elements inside the heap are out of order and
     //              'rebuilds' the heap by fixing the heap invariant.
     // Runtime: O(n)
     virtual void updatePriorities() {
-        // TODO: Implement this function.
+		for (size_t i = this.size() / 2; i > 0; i--)
+		{
+			fixDown(i);
+		}
     } // updatePriorities()
 
 
     // Description: Add a new element to the heap.
     // Runtime: O(log(n))
     // TODO: when you implement this function, uncomment the parameter names.
-    virtual void push(const TYPE & /*val*/) {
-        // TODO: Implement this function.
+    virtual void push(const TYPE & val) {
+		data.push_back(val);
+		fixUp(this->size()); //indexing might be different
     } // push()
 
 
@@ -62,7 +96,9 @@ public:
     // familiar with them, you do not need to use exceptions in this project.
     // Runtime: O(log(n))
     virtual void pop() {
-        // TODO: Implement this function.
+		data[1] = data[data.size() - 1];
+		data.pop_back();
+		fixDown(1);
     } // pop()
 
 
@@ -72,29 +108,21 @@ public:
     //              might make it no longer be the most extreme element.
     // Runtime: O(1)
     virtual const TYPE & top() const {
-        // TODO: Implement this function.
-
-        // These lines are present only so that this provided file compiles.
-        static TYPE temp; // TODO: Delete this line
-        return temp;      // TODO: Delete or change this line
+		return data[data.size() - 1];
     } // top()
 
 
     // Description: Get the number of elements in the heap.
     // Runtime: O(1)
     virtual std::size_t size() const {
-        // TODO: Implement this function.  Might be very simple,
-        // depending on your implementation.
-        return 0; // TODO: Delete or change this line
+		return data.size() - 1;
     } // size()
 
 
     // Description: Return true if the heap is empty.
     // Runtime: O(1)
     virtual bool empty() const {
-        // TODO: Implement this function.  Might be very simple,
-        // depending on your implementation.
-        return true; // TODO: Delete or change this line
+		return data.size() == 1;
     } // empty()
 
 

@@ -1,0 +1,28 @@
+# sample.txt
+quiver-capacity: 75
+random-seed: 2049231
+max-rand-distance: 100
+max-rand-speed: 1
+max-rand-health: 300
+---
+round: 2
+random-zombies: 0
+named-zombies: 18
+Batjin distance: 150 speed: 50 health: 15
+MarySueColeman distance: 2 speed: 3 health: 6
+LeeBollinger distance: 100 speed: 1 health: 100
+Batjin1 distance: 150 speed: 50 health: 15
+MarySueColeman1 distance: 2 speed: 3 health: 6
+LeeBollinger1 distance: 100 speed: 1 health: 100
+Batjin2 distance: 150 speed: 50 health: 15
+MarySueColeman2 distance: 2 speed: 3 health: 6
+LeeBollinger2 distance: 100 speed: 1 health: 100
+Batjin3 distance: 150 speed: 50 health: 15
+MarySueColeman3 distance: 2 speed: 3 health: 6
+LeeBollinger3 distance: 100 speed: 1 health: 100
+Batjin4 distance: 150 speed: 50 health: 15
+MarySueColeman4 distance: 2 speed: 3 health: 6
+LeeBollinger4 distance: 100 speed: 1 health: 100
+Batjin5 distance: 150 speed: 50 health: 15
+MarySueColeman5 distance: 2 speed: 3 health: 6
+LeeBollinger5 distance: 100 speed: 1 health: 100

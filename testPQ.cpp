@@ -116,6 +116,7 @@ void testPriorityQueue(Eecs281PQ<int> *pq, const string &pqType) {
 
     pq->push(3);
     pq->push(4);
+	cout << "Size is " << pq->size() << endl;
     assert(pq->size() == 2);
     assert(pq->top() == 4);
 

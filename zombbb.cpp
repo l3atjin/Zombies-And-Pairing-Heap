@@ -82,10 +82,10 @@ int main(int argc, char * argv[])
 
 	pandemic.read_header();
 	P2random::initialize(pandemic.randSeed, pandemic.maxRandDist, pandemic.maxRanDSpeed, pandemic.maxRandHP);
-	
+
 	int count = 1;
 	// main game loop
-	while (!pandemic.isDead || pandemic.isGameWon)
+	while (!pandemic.isDead && !pandemic.isGameWon)
 	{
 		if (pandemic.isVerbose)
 		{
@@ -109,7 +109,7 @@ int main(int argc, char * argv[])
 
 			// Shoot down dem zombies
 			pandemic.human_attack(count);
-			
+
 		}
 		if (pandemic.isMedian && pandemic.didZombieDie && !pandemic.isDead)
 		{
@@ -119,17 +119,16 @@ int main(int argc, char * argv[])
 		{
 			count++;
 		}
-		if (pandemic.isGameWon || pandemic.isDead)
-		{
-			break;
-		}
 		//cout << "updated age" << "\n"
-		
+
 
 		//cout << "finished loop" << "\n";
-		
 	}
-	pandemic.update_age();
+	if (pandemic.isStats)
+	{
+		pandemic.update_age();
+	}
+	pandemic.heapify();
 	if (pandemic.isGameWon)
 	{
 		cout << "VICTORY IN ROUND " << count << "! " << pandemic.lastJedi << " was the last zombie." << "\n";
@@ -142,10 +141,9 @@ int main(int argc, char * argv[])
 	{
 		pandemic.print_stats();
 	}
-	cout << "Active zombies size: " << pandemic.activeZombies.size() << endl;
-	cout << "Sorted zombies size: " << pandemic.sortedZombies.size() << endl;
-	cout << "Most active zombies size: " << pandemic.mostActiveZombies.size() << endl;
-	cout << "Least active zombies size: " << pandemic.leastActiveZombies.size() << endl;
+
+	//pandemic.heapify();
+
 }
 
 

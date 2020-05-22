@@ -17,7 +17,7 @@ using namespace std;
 class zombie
 {
 private:
-	
+
 
 public:
 	string name;
@@ -33,11 +33,11 @@ public:
 
 
 	zombie(string name_in, int dist_in, int speed_in, int hp_in, int round_in)
-		: name(name_in), distance(dist_in), speed(speed_in), health(hp_in), roundBorn(round_in) 
+		: name(name_in), distance(dist_in), speed(speed_in), health(hp_in), roundBorn(round_in)
 	{
 		ETA = distance / speed;
 	}
-	
+
 	void move(bool &isDead, bool isVerbose, string &chadZombie)
 	{
 		if (isActive)
