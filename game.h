@@ -102,7 +102,7 @@ public:
 		}
 		else if (z1.age == z2.age)
 		{
-			if (z1.name < z2.name)
+			if (z1.name > z2.name)
 			{
 				return true;
 			}
@@ -146,9 +146,9 @@ public:
 	CompareZombieAgeMore ageMore;
 	CompareZombieAgeMoree ageMoree;
 	priority_queue<zombie*, deque<zombie*>, CompareZombieETA> sortedZombies;
-	priority_queue<zombie*, deque<zombie*>, CompareZombieAgeMore> mostActiveZombies;
+	//priority_queue<zombie*, deque<zombie*>, CompareZombieAgeMore> mostActiveZombies;
 	priority_queue<zombie*, deque<zombie*>, CompareZombieAgeLess> leastActiveZombies;
-	
+
 
 	priority_queue<int, deque<int>, greater<int>> upper;
 	priority_queue<int, deque<int>, less<int>> lower;
@@ -406,32 +406,11 @@ public:
 			{
 				zombie.age = lastRound - zombie.roundBorn + 1;
 			}
-			else if (!isMedian)
+			else if (!zombie.isActive && !isMedian)
 			{
 				zombie.age = zombie.roundDied - zombie.roundBorn + 1;
 			}
-			mostActiveZombies.push(&zombie);
 			leastActiveZombies.push(&zombie);
-		}
-	}
-
-	void heapify()
-	{
-		make_heap(activeZombies.begin(), activeZombies.end(), ageLesss);
-		for (size_t i = 0; i < activeZombies.size(); i++)
-		{
-			cout << activeZombies.front().name << endl;
-			pop_heap(activeZombies.begin(), activeZombies.end(), ageLesss);
-			activeZombies.pop_back();
-		}
-	}
-
-	void print_test()
-	{
-		for (size_t i = 0; i < activeZombies.size(); i++)
-		{
-			cout << activeZombies[i].name << " " << sortedZombies.top()->name << "\n";
-			sortedZombies.pop();
 		}
 	}
 
@@ -547,8 +526,22 @@ public:
 			}
 		}
 
-
 		cout << "Least active zombies:" << "\n";
+		count1 = 1;
+
+		make_heap(activeZombies.begin(), activeZombies.end(), ageMoree);
+		for (auto &zombie : activeZombies)
+		{
+			if (zombie.age > 0 && N != count1 - 1)
+			{
+				cout << activeZombies.front().name << " " << activeZombies.front().age << endl;
+				pop_heap(activeZombies.begin(), activeZombies.end(), ageMoree);
+				activeZombies.pop_back();
+				count1++;
+			}
+		}
+
+		/*cout << "Least active zombies:" << "\n";
 		count1 = 1;
 
 		for (size_t i = 0; i < activeZombies.size() && N != count1 - 1; i++)
@@ -563,7 +556,7 @@ public:
 				count1++;
 				mostActiveZombies.pop();
 			}
-		}
+		}*/
 	}
 
 };

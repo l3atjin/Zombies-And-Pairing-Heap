@@ -20,7 +20,7 @@ public:
             // TODO: After you add add one extra pointer (see below), be sure to
             // initialize it here.
             explicit Node(const TYPE &val)
-                : elt{ val }, child{ nullptr }, sibling{ nullptr }
+                : elt{ val }, child{ nullptr }, sibling{ nullptr }, parent { nullptr }
             {}
 
             // Description: Allows access to the element at that Node's position.
@@ -39,15 +39,16 @@ public:
             TYPE elt;
             Node *child;
             Node *sibling;
+			Node *parent;
             // TODO: Add one extra pointer (parent or previous) as desired.
     }; // Node
 
 
     // Description: Construct an empty priority_queue with an optional comparison functor.
     // Runtime: O(1)
-    explicit PairingPQ(COMP_FUNCTOR comp = COMP_FUNCTOR()) :
-        BaseClass{ comp } {
-        // TODO: Implement this function.
+	explicit PairingPQ(COMP_FUNCTOR comp = COMP_FUNCTOR()) :
+		BaseClass{ comp } {
+		root = nullptr;
     } // PairingPQ()
 
 
@@ -56,9 +57,14 @@ public:
     // Runtime: O(n) where n is number of elements in range.
     // TODO: when you implement this function, uncomment the parameter names.
     template<typename InputIterator>
-    PairingPQ(InputIterator /*start*/, InputIterator /*end*/, COMP_FUNCTOR comp = COMP_FUNCTOR()) :
-        BaseClass{ comp } {
-        // TODO: Implement this function.
+	PairingPQ(InputIterator start, InputIterator end, COMP_FUNCTOR comp = COMP_FUNCTOR()) :
+		BaseClass{ comp } {
+		root = nullptr;
+		while (start != end)
+		{
+			addNode(*start);
+			start++;
+		}
     } // PairingPQ()
 
 
@@ -66,16 +72,51 @@ public:
     // Runtime: O(n)
     PairingPQ(const PairingPQ& other) :
         BaseClass{ other.compare } {
-        // TODO: Implement this function.
+		data.push_back(other.root);
+		root = nullptr;
+		// this might give u headache
+		Node* currentNode = new Node(other.root->elt);
+		while (!data.empty())
+		{
+			currentNode = data.front();
+			data.pop_front();
+			if (currentNode->child)
+			{
+				data.push_back(currentNode->child);
+			}
+			if (currentNode->sibling)
+			{
+				data.push_back(currentNode->sibling);
+			}
+			addNode(currentNode->elt);
+		}
+		delete currentNode;
     } // PairingPQ()
 
 
     // Description: Copy assignment operator.
     // Runtime: O(n)
     // TODO: when you implement this function, uncomment the parameter names.
-    PairingPQ& operator=(const PairingPQ& /*rhs*/) {
-        // TODO: Implement this function.
-
+    PairingPQ& operator=(const PairingPQ& rhs) {
+		data.push_back(rhs.root);
+		root = nullptr;
+		// this might give u headache
+		Node* currentNode = new Node(rhs.root->elt);
+		while (!data.empty())
+		{
+			currentNode = data.front();
+			data.pop_front();
+			if (currentNode->child)
+			{
+				data.push_back(currentNode->child);
+			}
+			if (currentNode->sibling)
+			{
+				data.push_back(currentNode->sibling);
+			}
+			addNode(currentNode->elt);
+		}
+		delete currentNode;
         return *this;
     } // operator=()
 
@@ -83,7 +124,24 @@ public:
     // Description: Destructor
     // Runtime: O(n)
     ~PairingPQ() {
-        // TODO: Implement this function.
+		data.push_back(root);
+		// this might give u headache
+		Node* currentNode = new Node(root->elt);
+		while (!data.empty())
+		{
+			currentNode = data.front();
+			data.pop_front();
+			if (currentNode->child)
+			{
+				data.push_back(currentNode->child);
+			}
+			if (currentNode->sibling)
+			{
+				data.push_back(currentNode->sibling);
+			}
+			delete data.front();
+		}
+		delete currentNode;
     } // ~PairingPQ()
 
 
@@ -91,7 +149,39 @@ public:
     //              'rebuilds' the priority_queue by fixing the priority_queue invariant.
     // Runtime: O(n)
     virtual void updatePriorities() {
-        // TODO: Implement this function.
+		//cout << "Entered updatePrio" << endl;
+		Node* currentNode = new Node(root->elt);
+		currentNode = root;
+		data.push_back(currentNode);
+		root = nullptr;
+		// this might give u headache
+		//cout << "Before the Loop" << endl;
+		while (!data.empty())
+		{
+			currentNode = data.front();
+			data.pop_front();
+			if (currentNode->child)
+			{
+				data.push_back(currentNode->child);
+			}
+			if (currentNode->sibling)
+			{
+				data.push_back(currentNode->sibling);
+			}
+			currentNode->child = nullptr;
+			currentNode->sibling = nullptr;
+			currentNode->parent = nullptr;
+			if (!root)
+			{
+				root = currentNode;
+			}
+			else
+			{
+				meld(currentNode, root);
+			}
+		}
+		//cout << "After the Loop" << endl;
+		delete currentNode;
     } // updatePriorities()
 
 
@@ -100,8 +190,8 @@ public:
     //              function, and this function should call addNode().
     // Runtime: O(1)
     // TODO: when you implement this function, uncomment the parameter names.
-    virtual void push(const TYPE & /*val*/) {
-        // TODO: Implement this function.
+    virtual void push(const TYPE & val) {
+		addNode(val);
     } // push()
 
 
@@ -112,7 +202,44 @@ public:
     // familiar with them, you do not need to use exceptions in this project.
     // Runtime: Amortized O(log(n))
     virtual void pop() {
-        // TODO: Implement this function.
+		std::deque<Node*> dq;
+		if (!root->child)
+		{
+			delete root;
+			root = nullptr;
+			sz--;
+			return;
+		}
+		Node* temp = root->child;
+		dq.push_back(temp);
+		//cout << "Before Loop 1" << endl;
+		while (temp->sibling)
+		{
+			temp = temp->sibling;
+			dq.push_back(temp);
+		}
+		//cout << "Before Loop 2" << endl;
+		while (dq.size() != 1)
+		{
+			//cout << "Entered Loop 2" << endl;
+			//cout << "Size: " << dq.size() << endl;
+			dq[0]->sibling = nullptr;
+			dq[0]->parent = nullptr;
+			dq[1]->sibling = nullptr;
+			dq[1]->parent = nullptr;
+			//cout << "Progress 1" << endl;
+			temp = meld(dq[0], dq[1]);
+			//cout << "Progress 2" << endl;
+			dq.push_back(temp);
+			//cout << "Progress 3" << endl;
+			dq.pop_front();
+			dq.pop_front();
+		}
+		//cout << "After Loop 2" << endl;
+		delete root;
+		sz--;
+		root = dq.front();
+
     } // pop()
 
 
@@ -122,26 +249,20 @@ public:
     //              might make it no longer be the most extreme element.
     // Runtime: O(1)
     virtual const TYPE & top() const {
-        // TODO: Implement this function
-
-        // These lines are present only so that this provided file compiles.
-        static TYPE temp; // TODO: Delete this line
-        return temp;      // TODO: Delete or change this line
+		return root->elt;
     } // top()
 
 
     // Description: Get the number of elements in the priority_queue.
     // Runtime: O(1)
     virtual std::size_t size() const {
-        // TODO: Implement this function
-        return 0; // TODO: Delete or change this line
+		return sz;
     } // size()
 
     // Description: Return true if the priority_queue is empty.
     // Runtime: O(1)
     virtual bool empty() const {
-        // TODO: Implement this function
-        return true; // TODO: Delete or change this line
+		return sz == 0;
     } // empty()
 
 
@@ -154,8 +275,47 @@ public:
     //
     // Runtime: As discussed in reading material.
     // TODO: when you implement this function, uncomment the parameter names.
-    void updateElt(Node* /*node*/, const TYPE & /*new_value*/) {
-        // TODO: Implement this function
+    void updateElt(Node* node, const TYPE & new_value) {
+		node->elt = new_value;
+		if (node == root)
+		{
+			return;
+		}
+		if (this->compare(new_value, node->parent->elt))
+		{
+			return;
+		}
+		if (node->parent->child == node)
+		{
+			if (node->sibling)
+			{
+				node->parent->child = node->sibling;
+			}
+			else
+			{
+				node->parent->child = nullptr;
+			}
+		}
+		else
+		{
+			Node* temp = node->parent->child;
+			while (temp->sibling != node)
+			{
+				temp = temp->sibling;
+			}
+			if (!node->sibling)
+			{
+				temp->sibling = nullptr;
+			}
+			else
+			{
+				temp->sibling = node->sibling;
+			}
+		}
+		node->parent = nullptr;
+		node->sibling = nullptr;
+		meld(node, root);
+
     } // updateElt()
 
 
@@ -167,16 +327,54 @@ public:
     //       never move or copy/delete that node in the future, until it is eliminated
     //       by the user calling pop().  Remember this when you implement updateElt() and
     //       updatePriorities().
-    Node* addNode(const TYPE & /*val*/) {
-        // TODO: Implement this function
-        return nullptr; // TODO: Delete or change this line
+    Node* addNode(const TYPE & val) {
+		//cout << "Entered meld" << endl;
+		Node* p = new Node(val);
+		if (!root)
+		{
+			sz++;
+			root = p;
+			//cout << "Exited meld" << endl;
+			return p;
+		}
+		meld(p, root);
+		sz++;
+		//cout << "Exited meld" << endl;
+        return p; // TODO: Delete or change this line
     } // addNode()
 
 
 private:
     // TODO: Add any additional member functions or data you require here.
     // TODO: We recommend creating a 'meld' function (see the Pairing Heap papers).
-
+	std::deque<Node*> data;
+	Node *root = nullptr;
+	size_t sz = 0;
+	Node* meld(Node* a, Node* b)
+	{
+		if (this->compare(a->elt, b->elt))
+		{
+			a->sibling = b->child;
+			b->child = a;
+			a->parent = b;
+			if (a == root)
+			{
+				root = b;
+			}
+			return b;
+		}
+		else
+		{
+			b->sibling = a->child;
+			a->child = b;
+			b->parent = a;
+			if (b == root)
+			{
+				root = a;
+			}
+			return a;
+		}
+	}
 };
 
 

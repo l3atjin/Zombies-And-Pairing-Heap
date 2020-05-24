@@ -7,6 +7,8 @@
 #include <algorithm>
 #include "Eecs281PQ.h"
 
+using namespace std;
+
 // A specialized version of the 'heap' ADT implemented as a binary heap.
 template<typename TYPE, typename COMP_FUNCTOR = std::less<TYPE>>
 class BinaryPQ : public Eecs281PQ<TYPE, COMP_FUNCTOR> {
@@ -18,8 +20,8 @@ public:
     // Runtime: O(1)
     explicit BinaryPQ(COMP_FUNCTOR comp = COMP_FUNCTOR()) :
 		BaseClass{ comp }, data{} {
-		TYPE junk;
-		data[0] = junk;
+		//TYPE junk;
+		//data[0] = junk;
     } // BinaryPQ
 
 
@@ -29,11 +31,9 @@ public:
     // TODO: when you implement this function, uncomment the parameter names.
     template<typename InputIterator>
     BinaryPQ(InputIterator start, InputIterator end, COMP_FUNCTOR comp = COMP_FUNCTOR()) :
-		BaseClass{ comp }, data{start, end + 1} {
-		for (size_t i = this.size() / 2; i > 0; i--)
-		{
-			fixDown(i);
-		}
+		BaseClass{ comp }, data{start, end} {
+		data.push_back(*start);
+		updatePriorities();
     } // BinaryPQ
 
 
@@ -42,21 +42,21 @@ public:
     virtual ~BinaryPQ() {
     } // ~BinaryPQ()
 
-	void fixUp(int k)
+	void fixUp(size_t k)
 	{
 		while (k > 1 && this->compare(data[k/2], data[k]))
 		{
 			swap(data[k], data[k/2]);
-			k = / 2;
+			k = k / 2;
 		}
 	}
 
-	void fixDown(int k)
+	void fixDown(size_t k)
 	{
-		while (k > 1 && this->compare(data[k / 2], data[k]))
+		while (2 * k <= this->size())
 		{
-			int j = 2 * k;
-			if (j < this.size() && this->compare(data[j], data[j+1]))
+			size_t j = 2 * k;
+			if (j < this->size() && this->compare(data[j], data[j+1]))
 			{
 				++j;
 			}
@@ -73,7 +73,7 @@ public:
     //              'rebuilds' the heap by fixing the heap invariant.
     // Runtime: O(n)
     virtual void updatePriorities() {
-		for (size_t i = this.size() / 2; i > 0; i--)
+		for (size_t i = this->size() / 2; i > 0; i--)
 		{
 			fixDown(i);
 		}
@@ -84,7 +84,12 @@ public:
     // Runtime: O(log(n))
     // TODO: when you implement this function, uncomment the parameter names.
     virtual void push(const TYPE & val) {
+		if (data.empty())
+		{
+			data.push_back(val);
+		}
 		data.push_back(val);
+		//int k = static_cast<int>(this->size());
 		fixUp(this->size()); //indexing might be different
     } // push()
 
@@ -96,7 +101,7 @@ public:
     // familiar with them, you do not need to use exceptions in this project.
     // Runtime: O(log(n))
     virtual void pop() {
-		data[1] = data[data.size() - 1];
+		data[1] = data[this->size()];
 		data.pop_back();
 		fixDown(1);
     } // pop()
@@ -108,7 +113,7 @@ public:
     //              might make it no longer be the most extreme element.
     // Runtime: O(1)
     virtual const TYPE & top() const {
-		return data[data.size() - 1];
+		return data[1];
     } // top()
 
 

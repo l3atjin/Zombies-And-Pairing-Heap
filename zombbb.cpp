@@ -128,7 +128,7 @@ int main(int argc, char * argv[])
 	{
 		pandemic.update_age();
 	}
-	pandemic.heapify();
+	//pandemic.heapify();
 	if (pandemic.isGameWon)
 	{
 		cout << "VICTORY IN ROUND " << count << "! " << pandemic.lastJedi << " was the last zombie." << "\n";

@@ -69,11 +69,18 @@ void testHiddenData(const string &pqType) {
 // TODO: Add more code to this function to test if updatePriorities()
 // is working properly.
 void testUpdatePrioritiesHelper(Eecs281PQ<int *, IntPtrComp> *pq) {
+	cout << "Entered helper" << endl;
     vector<int> data;
     data.reserve(100);
     data.push_back(1);
     data.push_back(5);
-
+    data.push_back(8);
+    data.push_back(3);
+    data.push_back(2);
+    data.push_back(6);
+    data.push_back(7);
+    data.push_back(20);
+	cout << "Progress 1" << endl;
     // NOTE: If you add more data to the vector, don't push the pointers
     // until AFTER the vector stops changing size!  Think about why.
     // You can add up to 100 values, or change the reserve if you want more.
@@ -81,11 +88,20 @@ void testUpdatePrioritiesHelper(Eecs281PQ<int *, IntPtrComp> *pq) {
     for (size_t i = 0; i < data.size(); ++i) {
         pq->push(&data[i]);
     } // for
-
+	cout << "Progress 2" << endl;
+	assert(*pq->top() == 20);
+	cout << "Progress 3" << endl;
     // Change the first value (which is pointed to by the pq), and check it.
-    data[0] = 10;
+    data[0] = 100;
     pq->updatePriorities();
-    assert(*pq->top() == 10);
+	cout << "Progress 4" << endl;
+	cout << "Top is " << *pq->top() << endl;
+    assert(*pq->top() == 100);
+	cout << "Progress 5" << endl;
+	pq->pop();
+	cout << "Progress 6" << endl;
+	assert(*pq->top() == 8);
+	cout << "Progress 7" << endl;
 } // testUpdatePrioritiesHelper()
 
 
@@ -98,7 +114,18 @@ void testUpdatePriorities(const string &pqType) {
     if (pqType == "Unordered") {
         pq = new UnorderedPQ<int *, IntPtrComp>;
     } // if
-    // TODO: Add more types here inside 'else if' statements, like in main().
+	else if (pqType == "Binary")
+	{
+		pq = new BinaryPQ<int *, IntPtrComp>;
+	}
+	else if (pqType == "Sorted")
+	{
+		pq = new SortedPQ<int *, IntPtrComp>;	
+	}
+	else if (pqType == "Pairing")
+	{
+		pq = new PairingPQ<int *, IntPtrComp>;
+	}
 
     if (!pq) {
         cout << "Invalid pq pointer; did you forget to create it?" << endl;
@@ -116,18 +143,38 @@ void testPriorityQueue(Eecs281PQ<int> *pq, const string &pqType) {
 
     pq->push(3);
     pq->push(4);
+    pq->push(2);
+    pq->push(5);
 	cout << "Size is " << pq->size() << endl;
-    assert(pq->size() == 2);
-    assert(pq->top() == 4);
+    assert(pq->size() == 4);
+	cout << "Top is " << pq->top() << endl;
+    assert(pq->top() == 5);
+	pq->push(6);
+	pq->push(7);
+	pq->push(8);
+	assert(pq->top() == 8);
 
     pq->pop();
-    assert(pq->size() == 1);
-    assert(pq->top() == 3);
+	cout << "Size is " << pq->size() << endl;
+    assert(pq->size() == 6);
+	cout << "Top is " << pq->top() << endl;
+    assert(pq->top() == 7);
     assert(!pq->empty());
 
     pq->pop();
-    assert(pq->size() == 0);
-    assert(pq->empty());
+    assert(pq->size() == 5);
+	assert(pq->top() == 6);
+	pq->pop();
+	assert(pq->top() == 5);
+	pq->pop();
+	assert(pq->top() == 4);
+	pq->pop();
+	assert(pq->top() == 3);
+	pq->pop();
+	assert(pq->top() == 2);
+	assert(pq->size() == 1);
+	pq->pop();
+	assert(pq->empty());
 
     // TODO: Add more testing here!
 
@@ -179,6 +226,7 @@ int main() {
     cout << endl;
     cout << "Select one: ";
     cin >> choice;
+
 
     if (choice == 0) {
         pq = new UnorderedPQ<int>;

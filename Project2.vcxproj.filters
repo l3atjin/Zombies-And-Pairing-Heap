@@ -24,6 +24,9 @@
     <ClCompile Include="zombbb.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="testPQ.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="game.h">
@@ -33,6 +36,24 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="zombie.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="BinaryPQ.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Eecs281PQ.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UnorderedFastPQ.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UnorderedPQ.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SortedPQ.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="PairingPQ.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
