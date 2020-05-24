@@ -185,6 +185,43 @@ void testPriorityQueue(Eecs281PQ<int> *pq, const string &pqType) {
 	assert(pq->empty());
 
     // TODO: Add more testing here!
+	cout << "TESTING COPY CTOR" << endl;
+	Eecs281PQ<int> *pq1(pq);
+
+	pq1->push(3);
+	pq1->push(4);
+	pq1->push(2);
+	pq1->push(5);
+	cout << "Size is " << pq1->size() << endl;
+	assert(pq1->size() == 4);
+	cout << "Top is " << pq1->top() << endl;
+	assert(pq1->top() == 5);
+	pq1->push(6);
+	pq1->push(7);
+	pq1->push(8);
+	assert(pq1->top() == 8);
+
+	pq1->pop();
+	cout << "Size is " << pq1->size() << endl;
+	assert(pq1->size() == 6);
+	cout << "Top is " << pq1->top() << endl;
+	assert(pq1->top() == 7);
+	assert(!pq1->empty());
+
+	pq1->pop();
+	assert(pq1->size() == 5);
+	assert(pq1->top() == 6);
+	pq1->pop();
+	assert(pq1->top() == 5);
+	pq1->pop();
+	assert(pq1->top() == 4);
+	pq1->pop();
+	assert(pq1->top() == 3);
+	pq1->pop();
+	assert(pq1->top() == 2);
+	assert(pq1->size() == 1);
+	pq1->pop();
+	assert(pq1->empty());
 
     cout << "testPriorityQueue() succeeded!" << endl;
 } // testPriorityQueue()

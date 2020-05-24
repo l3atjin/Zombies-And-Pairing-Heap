@@ -139,7 +139,11 @@ public:
 			{
 				data.push_back(currentNode->sibling);
 			}
-			delete data.front();
+			delete currentNode;
+		}
+		for (size_t i = 0; i < data.size(); i++)
+		{
+			delete data[i];
 		}
 		//delete currentNode;
     } // ~PairingPQ()
