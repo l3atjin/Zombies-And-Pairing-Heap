@@ -72,6 +72,7 @@ public:
     // Runtime: O(n)
     PairingPQ(const PairingPQ& other) :
         BaseClass{ other.compare } {
+		std::deque<Node*> data;
 		data.push_back(other.root);
 		root = nullptr;
 		// this might give u headache
@@ -98,6 +99,7 @@ public:
     // Runtime: O(n)
     // TODO: when you implement this function, uncomment the parameter names.
     PairingPQ& operator=(const PairingPQ& rhs) {
+		std::deque<Node*> data;
 		data.push_back(rhs.root);
 		root = nullptr;
 		// this might give u headache
@@ -124,6 +126,7 @@ public:
     // Description: Destructor
     // Runtime: O(n)
     ~PairingPQ() {
+		std::deque<Node*> data;
 		data.push_back(root);
 		// this might give u headache
 		Node* currentNode = root;
@@ -141,10 +144,6 @@ public:
 			}
 			delete currentNode;
 		}
-		for (size_t i = 0; i < data.size(); i++)
-		{
-			delete data[i];
-		}
 		//delete currentNode;
     } // ~PairingPQ()
 
@@ -154,6 +153,7 @@ public:
     // Runtime: O(n)
     virtual void updatePriorities() {
 		//cout << "Entered updatePrio" << endl;
+		std::deque<Node*> data;
 		Node* currentNode = root;
 		data.push_back(currentNode);
 		root = nullptr;
@@ -349,7 +349,7 @@ public:
 private:
     // TODO: Add any additional member functions or data you require here.
     // TODO: We recommend creating a 'meld' function (see the Pairing Heap papers).
-	std::deque<Node*> data;
+	
 	Node *root = nullptr;
 	size_t sz = 0;
 	Node* meld(Node* a, Node* b)
