@@ -69,7 +69,7 @@ void testHiddenData(const string &pqType) {
 // TODO: Add more code to this function to test if updatePriorities()
 // is working properly.
 void testUpdatePrioritiesHelper(Eecs281PQ<int *, IntPtrComp> *pq) {
-	cout << "Entered helper" << endl;
+	//cout << "Entered helper" << endl;
     vector<int> data;
     data.reserve(100);
     data.push_back(1);
@@ -80,7 +80,7 @@ void testUpdatePrioritiesHelper(Eecs281PQ<int *, IntPtrComp> *pq) {
     data.push_back(6);
     data.push_back(7);
     data.push_back(20);
-	cout << "Progress 1" << endl;
+	//cout << "Progress 1" << endl;
     // NOTE: If you add more data to the vector, don't push the pointers
     // until AFTER the vector stops changing size!  Think about why.
     // You can add up to 100 values, or change the reserve if you want more.
@@ -88,20 +88,28 @@ void testUpdatePrioritiesHelper(Eecs281PQ<int *, IntPtrComp> *pq) {
     for (size_t i = 0; i < data.size(); ++i) {
         pq->push(&data[i]);
     } // for
-	cout << "Progress 2" << endl;
+	// << "Progress 2" << endl;
 	assert(*pq->top() == 20);
-	cout << "Progress 3" << endl;
+	//cout << "Progress 3" << endl;
     // Change the first value (which is pointed to by the pq), and check it.
     data[0] = 100;
+    data[7] = 101;
+    data[2] = 102;
     pq->updatePriorities();
-	cout << "Progress 4" << endl;
-	cout << "Top is " << *pq->top() << endl;
-    assert(*pq->top() == 100);
-	cout << "Progress 5" << endl;
+	// << "Progress 4" << endl;
+	//cout << "Top is " << *pq->top() << endl;
+    assert(*pq->top() == 102);
+	//cout << "Progress 5" << endl;
 	pq->pop();
-	cout << "Progress 6" << endl;
-	assert(*pq->top() == 8);
-	cout << "Progress 7" << endl;
+	//cout << "Progress 6" << endl;
+	assert(*pq->top() == 101);
+	//cout << "Progress 7" << endl;
+	pq->pop();
+	assert(*pq->top() == 100);
+	pq->pop();
+	assert(*pq->top() == 7);
+	pq->pop();
+	assert(*pq->top() == 6);
 } // testUpdatePrioritiesHelper()
 
 

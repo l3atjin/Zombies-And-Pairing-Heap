@@ -75,7 +75,7 @@ public:
 		data.push_back(other.root);
 		root = nullptr;
 		// this might give u headache
-		Node* currentNode = new Node(other.root->elt);
+		Node* currentNode = other.root;
 		while (!data.empty())
 		{
 			currentNode = data.front();
@@ -90,7 +90,7 @@ public:
 			}
 			addNode(currentNode->elt);
 		}
-		delete currentNode;
+		//delete currentNode;
     } // PairingPQ()
 
 
@@ -101,7 +101,7 @@ public:
 		data.push_back(rhs.root);
 		root = nullptr;
 		// this might give u headache
-		Node* currentNode = new Node(rhs.root->elt);
+		Node* currentNode = rhs.root;
 		while (!data.empty())
 		{
 			currentNode = data.front();
@@ -116,7 +116,7 @@ public:
 			}
 			addNode(currentNode->elt);
 		}
-		delete currentNode;
+		//delete currentNode;
         return *this;
     } // operator=()
 
@@ -126,7 +126,7 @@ public:
     ~PairingPQ() {
 		data.push_back(root);
 		// this might give u headache
-		Node* currentNode = new Node(root->elt);
+		Node* currentNode = root;
 		while (!data.empty())
 		{
 			currentNode = data.front();
@@ -141,7 +141,7 @@ public:
 			}
 			delete data.front();
 		}
-		delete currentNode;
+		//delete currentNode;
     } // ~PairingPQ()
 
 
@@ -150,8 +150,7 @@ public:
     // Runtime: O(n)
     virtual void updatePriorities() {
 		//cout << "Entered updatePrio" << endl;
-		Node* currentNode = new Node(root->elt);
-		currentNode = root;
+		Node* currentNode = root;
 		data.push_back(currentNode);
 		root = nullptr;
 		// this might give u headache
@@ -181,7 +180,7 @@ public:
 			}
 		}
 		//cout << "After the Loop" << endl;
-		delete currentNode;
+		//delete currentNode;
     } // updatePriorities()
 
 
@@ -228,9 +227,8 @@ public:
 			dq[1]->sibling = nullptr;
 			dq[1]->parent = nullptr;
 			//cout << "Progress 1" << endl;
-			temp = meld(dq[0], dq[1]);
 			//cout << "Progress 2" << endl;
-			dq.push_back(temp);
+			dq.push_back(meld(dq[0], dq[1]));
 			//cout << "Progress 3" << endl;
 			dq.pop_front();
 			dq.pop_front();
