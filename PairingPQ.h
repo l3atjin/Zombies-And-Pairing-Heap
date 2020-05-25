@@ -107,7 +107,6 @@ public:
 		while (!data.empty())
 		{
 			currentNode = data.front();
-			data.pop_front();
 			if (currentNode->child)
 			{
 				data.push_back(currentNode->child);
@@ -117,6 +116,7 @@ public:
 				data.push_back(currentNode->sibling);
 			}
 			addNode(currentNode->elt);
+			data.pop_front();
 		}
 		//delete currentNode;
         return *this;
@@ -129,20 +129,21 @@ public:
 		std::deque<Node*> data;
 		data.push_back(root);
 		// this might give u headache
-		Node* currentNode = root;
 		while (!data.empty())
 		{
-			currentNode = data.front();
+			if (data.front()->child)
+			{
+				data.push_back(data.front()->child);
+			}
+			if (data.front()->sibling)
+			{
+				data.push_back(data.front()->sibling);
+			}
+			data.front()->sibling = nullptr;
+			data.front()->child = nullptr;
+			data.front()->parent = nullptr;
+			delete data.front();
 			data.pop_front();
-			if (currentNode->child)
-			{
-				data.push_back(currentNode->child);
-			}
-			if (currentNode->sibling)
-			{
-				data.push_back(currentNode->sibling);
-			}
-			delete currentNode;
 		}
 		//delete currentNode;
     } // ~PairingPQ()
