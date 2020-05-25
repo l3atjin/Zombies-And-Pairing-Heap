@@ -126,25 +126,31 @@ public:
     // Description: Destructor
     // Runtime: O(n)
     ~PairingPQ() {
-		std::deque<Node*> data;
-		data.push_back(root);
-		// this might give u headache
-		while (!data.empty())
+		if (root)
 		{
-			if (data.front()->child)
+			std::deque<Node*> data;
+			Node* currentNode = root;
+			data.push_back(currentNode);
+			// this might give u headacheW
+			while (!data.empty())
 			{
-				data.push_back(data.front()->child);
+				currentNode = data.front();
+				if (currentNode->child)
+				{
+					data.push_back(currentNode->child);
+					currentNode->child = nullptr;
+				}
+				if (currentNode->sibling)
+				{
+					data.push_back(currentNode->sibling);
+					currentNode->sibling = nullptr;
+				}
+				currentNode->parent = nullptr;
+				delete currentNode;
+				data.pop_front();
 			}
-			if (data.front()->sibling)
-			{
-				data.push_back(data.front()->sibling);
-			}
-			data.front()->sibling = nullptr;
-			data.front()->child = nullptr;
-			data.front()->parent = nullptr;
-			delete data.front();
-			data.pop_front();
 		}
+		
 		//delete currentNode;
     } // ~PairingPQ()
 
